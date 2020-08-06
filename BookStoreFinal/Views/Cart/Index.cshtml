@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using BookStoreFinal.Models;
+@model Cart
+    <div class="cart-main-area section-padding--lg bg--white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 ol-lg-12">
+                    <form action="/cart/updatecart" method="post">
+                        <div class="table-content wnro__table table-responsive">
+                            <table>
+                                <thead>
+                                    <tr class="title-top">
+                                        <th class="product-thumbnail">image</th>
+                                        <th class="product-name">product</th>
+                                        <th class="product-price">price</th>
+                                        <th class="product-quantity">quantity</th>
+                                        <th class="product-subtotal">total</th>
+                                        <th class="product-remove">remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int i = 0;}
+                                    @foreach (var it in Model.Lines)
+                                    {
+                                        <tr>
+                                            <td class="product-thumbnail"><a href="#"><img src="~/content/images/books/@it.Book.BOOK_URL" alt="product img"></a></td>
+                                            <td class="product-name"><a href="#">@it.Book.TITLE</a></td>
+                                            <td class="product-price"><span class="amount">@((it.Book.PRICE.GetValueOrDefault(0)).ToString("n0")) vnđ</span></td>
+                                            <td class="product-quantity">
+
+                                                <input type="hidden" name="bookid[@i]" value="@it.Book.ID" />
+                                                <input type="number" name="quantity[@i]" class="cart-input" value="@it.Quantity" min="1">
+
+                                            <td class="product-subtotal">@((it.Quantity * it.Book.PRICE.GetValueOrDefault(0)).ToString("n0")) vnđ</td>
+                                            <td class="product-remove"><a href="/cart/removeline/@it.Book.ID">x</a></td>
+                                        </tr>
+                                        i += 1;
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="cartbox__btn">
+                            <ul class="cart__btn__list d-flex flex-wrap flex-md-nowrap flex-lg-nowrap justify-content-between">
+                                <li><a href="/Home/Index" class="btn btn-danger deselect">Continue Shopping</a></li>
+                                <li><button type="submit" class="btn btn-danger deselect">Update</button></li>
+                                <li><a href="/Cart/Payment">Check Out</a></li>
+                            </ul>
+                        </div>
+                    </form>
+                    
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 offset-lg-6">
+                    <div class="cartbox__total__area">
+                        <div class="cart__total__amount">
+                            <span>Grand Total</span>
+                            <span>@Model.ComputeTotalValue().GetValueOrDefault().ToString("N0") VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<script>
+    function checkBoxAll() {
+        if ($('#checkboxAll').is(':checked')) {
+            $('.checkboxItem').prop('checked', true)
+            isCheckedAll = true
+        } else {
+            $('.checkboxItem').prop('checked', false)
+        }
+    }
+    function onClickSelectItem(selector) {
+        let numberAllRow = $('.checkboxItem').length
+        alert("a:"+numberAllRow)
+        if (!$(selector).is(':checked') && $('#checkboxAll').is(':checked')) {
+            $('#checkboxAll').prop('checked', false)
+        } else {
+            let numberRowIsChecked = $('.checkboxItem').filter(function () {
+                return $(this).is(':checked')
+            }).length
+            alert(numberRowIsChecked)
+            if (numberRowIsChecked === numberAllRow) {
+                $('#checkboxAll').prop('checked', true)
+            }
+        }
+    }
+    </script>*@
+
+

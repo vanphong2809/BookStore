@@ -1,0 +1,50 @@
+﻿
+
+@{ ViewBag.Title = "Index";
+    Layout = "~/Areas/AdminSite/Views/Shared/AdminLayout.cshtml"; }
+
+<div class="container">
+    <div class="row">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script>
+$(document).ready(() => {
+         jQuery.ajax({
+             url: '/AdminTrangChu/ThongKe',
+             method: 'POST',
+             data: {  },
+             dataType: 'json',
+             success: (response) => {
+                 console.log(response)
+                 let DuLieu = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                 for (let i = 0; i < 13; i++) {
+                     DuLieu[i] = response[i +1];
+                 }
+                     const ctx = document.getElementById('myChart').getContext('2d');
+                     const chart = new Chart(ctx, {
+                         // The type of chart we want to create
+                         type: 'bar',
+
+                         // The data for our dataset
+                         data: {
+                             labels: [1,2,3,4,5,6,7,8,9,10,11,12],
+                             datasets: [{
+                                 label: 'Danh thu theo tháng',
+                                 backgroundColor: '#1d6fc0',
+                                 borderColor: '#1d6fc0',
+                                 data: DuLieu
+                             }]
+                         },
+
+                         // Configuration options go here
+                         options: {}
+                     });
+
+             }
+         })
+
+    });</script>
+
+

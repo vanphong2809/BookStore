@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using BookStoreFinal.Models;
+@model BOOKS
+<div class="maincontent bg--white pt--80 pb--55">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-12">
+                <div class="wn__single__product">
+                    <div class="row">
+                        <div class="col-lg-6 col-12">
+                            <div class="wn__fotorama__wrapper">
+                                <div class="fotorama wn__fotorama__action" data-nav="thumbs">
+
+
+                                    <a href="~/Content/images/books/@Model.BOOK_URL"><img src="~/Content/images/books/@Model.BOOK_URL" alt=""></a>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="product__info__main">
+                                <h1>@Model.TITLE</h1>
+                                <div class="product-info-stock-sku d-flex">
+                                    <p>Availability:<span> In stock</span></p>
+                                </div>
+                                <div class="price-box">
+                                    <span>@((Model.PRICE.GetValueOrDefault(0)).ToString("N0")) VNĐ</span>
+                                </div>
+                                <div class="box-tocart d-flex">
+                                    <span>Qty</span>
+                                    <div class="btn-group">
+                                        <input id="quantityValue" class="input-text qty" name="qty" min="1" value="1" title="Qty" type="number">
+                                    </div>
+                                    <div class="addtocart__actions">
+                                        <button class="tocart" type="button" id="addToCart" onclick="AddCart();" title="Add to Cart">Add to Cart</button>
+                                    </div>
+
+                                </div>
+                                <div class="product-addto-links clearfix">
+                                    <a class="wishlist" href="#"></a>
+                                    <a class="compare" href="#"></a>
+                                    <a class="email" href="#"></a>
+                                </div>
+                                <div class="product__overview">
+                                    <p>@Model.EXCERPT</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product__info__detailed">
+                    <div class="pro_details_nav nav justify-content-start" role="tablist">
+                        <a class="nav-item nav-link active" data-toggle="tab" href="#nav-details" role="tab">Details</a>
+                    </div>
+                    <div class="tab__container">
+                        <!-- Start Single Tab Content -->
+                        <div class="pro__tab_label tab-pane fade show active" id="nav-details" role="tabpanel">
+                            <div class="description__attribute">
+                                <p>@Model.DESCRIPTION</p>
+                            </div>
+                        </div>
+                        <!-- End Single Tab Content -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ <div id="modalAddToCart" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAddToCart" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sản phẩm đã được thêm vào giỏ hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="addProductSuccess">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"  onclick="onRedirectToAction('/Home/Index');">Tiếp tục mua hàng</button>
+                <button type="button" class="btn btn-success" onclick="onRedirectToAction('/Cart/Index');">Đến giỏ hàng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function AddCart() {
+                let quantity = $('#quantityValue').val()
+                let contentString =
+                    `
+                        <div style="display: flex">
+                            <img src="/Content/images/books/@Model.BOOK_URL" width="100px" height="100px" alt="product_image">
+                            <div>
+                                <h3>@Model.TITLE</h3>
+                                <span>  Số lượng: ${ quantity }</span><br />
+                                <span>  Đơn giá: @( ((Model.PRICE.GetValueOrDefault(0)).ToString("N0"))  + "VNĐ")</span>
+                            </div>
+                        </div>
+                    `
+                $.ajax({
+                    url: '/Cart/AddCart',
+                    data: { id: @Model.ID, quantity },
+                    method: 'POST',
+                    dataType: 'text',
+                    success: function (response) {
+                        response = JSON.parse(response)
+                            $('#addProductSuccess').html(contentString)
+                            $('#modalAddToCart').modal('show')
+                    }
+                })
+            }
+</script>
+<script>
+    function onRedirectToAction(url) {
+        $(location).attr("href", url)
+    }
+</script>
+

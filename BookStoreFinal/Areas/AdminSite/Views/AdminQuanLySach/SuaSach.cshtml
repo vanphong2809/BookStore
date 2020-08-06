@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "TatCaSach";
+    Layout = "~/Areas/AdminSite/Views/Shared/AdminLayout.cshtml";
+}
+@using BookStoreFinal.Models
+@model BOOKS
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Thêm sách</h3>
+                </div>
+                <div class="card-body card-block">
+                    <form action="@Url.Action("Sua", "AdminQuanLySach")" onsubmit="return validateForm()" method="post" enctype="multipart/form-data" class="form-horizontal" id="FormAdd">
+                        @Html.ValidationSummary(true)
+                        <div class="row form-group">
+                            <div><input type="text" hidden name="ID" value="@Model.ID"></div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên sách(*)</label></div>
+                            <div class="col-12 col-md-7"><input type="text" required name="TenSach" id="Tensach" placeholder="Tên sách" value="@Model.TITLE" class="form-control"></div>
+                            <div class="col-md-2 error">@Html.ValidationMessageFor(m => m.TITLE, "", new { @class = "text-danger" })</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="selectLg" class=" form-control-label">Tác giả(*)</label></div>
+                            <div class="col-12 col-md-4">
+                                <select name="AUTHOR_ID" id="selectLg" class="form-control">
+                                    @foreach (var tacgia in (ViewBag.TatCaTacGia as IEnumerable<AUTHOR>))
+                                    {
+
+                                        if (@Model.AUTHOR_ID == tacgia.ID)
+                                        {
+                                            <option value="@tacgia.ID" selected>@tacgia.NAME</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@tacgia.ID">@tacgia.NAME</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="selectLg" class=" form-control-label">Chủ đề sách(*)</label></div>
+                            <div class="col-12 col-md-4">
+                                <select name="GENRE_ID" id="selectLg" class="form-control">
+                                    @foreach (var chude in (ViewBag.TatCaChuDe as IEnumerable<GENRE>))
+                                    {
+                                        if (@Model.GENRE_ID == chude.ID)
+                                        {
+                                            <option value="@Model.GENRE_ID" selected>@chude.NAME</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@chude.ID">@chude.NAME</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="NXB" class=" form-control-label">Nhà xuất bản(*)</label></div>
+                            <div class="col-12 col-md-4">
+                                <select name="PUBLISHER_ID" id="selectLg" class="form-control">
+                                    @foreach (var nxb in (ViewBag.TatCaNXB as IEnumerable<PUBLISHER>))
+                                    {
+                                        if (@Model.PUBLISHER_ID == nxb.ID)
+                                        {
+                                            <option value="@Model.PUBLISHER_ID" selected>@nxb.NAME</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@nxb.ID">@nxb.NAME</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="text-input" class=" form-control-label">Giá(*)</label></div>
+                            <div class="col-12 col-md-4"><input type="number" required id="Dongia" name="PRICE" min="0" placeholder="nhập giá" class="form-control" value="@Model.PRICE"></div>
+                            <div class="col-md-1">VNĐ</div>
+                            <div class="col-md-2 error">@Html.ValidationMessageFor(m => m.PRICE, "", new { @class = "text-danger" })</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Mô tả</label></div>
+                            <div class="col-12 col-md-7">
+                                <textarea id="textarea-input" rows="9" class="form-control" placeholder="Mô tả" name="DESCRIPTION">@Model.DESCRIPTION</textarea>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Mô tả ngắn gọn</label></div>
+                            <div class="col-12 col-md-7">
+                                <textarea id="textarea-input" rows="2" class="form-control" placeholder="Mô tả ngắn gọn" name="EXCERPT">@Model.EXCERPT</textarea>
+                            </div>
+                        </div>
+                        <div class="page-header" style="padding: 0 0 0 0;">
+                            <h3>Ảnh minh họa</h3>
+                            <hr>
+                            <img class="img-thumbnail" src="~/Content/images/books/@Model.BOOK_URL" alt="" id="displayImg">
+                        </div>
+                        <fieldset class="form-group">
+                            <input type="file" class="form-control-file" id="image" name="Hinhminhhoa" onchange="onFileSelected(event)">
+                            <input type="text" hidden value="@Model.BOOK_URL" name="BOOK_URL" />
+                        </fieldset>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fa fa-dot-circle-o"></i> Sửa
+                        </button>
+                        <a type="button" class="btn btn-danger btn-sm" href="@Url.Action("TatCaSach", "AdminQuanLySach")">
+                            <i class="fa fa-ban"></i> Hủy
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>//lấy ảnh từ máy hiển thị lên web
+    const onFileSelected = (event) => {
+        var selectedFile = event.target.files[0];
+        var reader = new FileReader();
+
+        var imgtag = document.getElementById("displayImg");
+        imgtag.title = selectedFile.name;
+
+        reader.onload = function (event) {
+            imgtag.src = event.target.result;
+        };
+        reader.readAsDataURL(selectedFile);
+    }
+    // validate dữ liệu trước khi submit
+    //const validateForm = () => {
+    //    if (document.getElementById('Tensach').value == "") {
+    //        alert("Bạn phải nhập tên sách");
+    //        return false;
+    //    }
+    //    if (document.getElementById('Dongia').value == "") {
+    //        alert("Phải nhập giá sách");
+    //        return false;
+    //    }
+    //    if (document.getElementById('Soluong').value == "") {
+    //        alert("Bạn phải nhập số lượng");
+    //        return false;
+    //    }
+    //}</script>
+
+
+
+
+
+

@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <section class="my_account_area pt--80 pb--55 bg--white">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-12">
+                    <div class="my__account__wrapper">
+                        <h3 class="account__title">Register</h3>
+                        <div>
+                            <p id="error" style="display:none; color:red">
+                                <i>Email Đã Tồn Tại</i>
+                            </p>
+                        </div>
+                        <form method="post" action="/User/Register" onsubmit="return validateRegister()">
+                            @Html.AntiForgeryToken()
+                            <div class="account__form">
+                                <div class="input__box">
+                                    <label>Full Name <span>*</span></label>
+                                    <input type="text" id="fullname" name="NAME">
+                                </div>
+                                <div id="namemess" style="display:none;color:red"><i>Họ và tên không được trống</i></div>
+                                <div class="input__box">
+                                    <label>UserName <span>*</span></label>
+                                    <input type="text" id="username" name="USERNAME">
+                                </div>
+                                <div id="usernamemess" style="display:none;color:red"><i>Tên đăng nhập không được trống</i></div>
+
+                                <div class="input__box">
+                                    <label>Password <span>*</span></label>
+                                    <input type="password" id="password" name="PASSWORD">
+                                </div>
+                                <div id="passmess" style="display:none;color:red"><i>Họ và tên không được trống</i></div>
+                                <div id="passmess1" style="display:none;color:red"><i>Mật khẩu phải có cả chữ, số và kí tự đặc biệt</i></div>
+
+                                <div class="input__box">
+                                    <label>Confirm Password <span>*</span></label>
+                                    <input type="password" id="checkpassword">
+                                </div>
+                                <div id="checkpass" style="display:none;color:red"><i>Mật khẩu chưa khớp</i></div>
+                                <div>
+                                    <label>Gender</label>
+                                    <select name="GENDER">
+                                        <option value="True">Male</option>
+                                        <option value="False">Female</option>
+                                    </select>
+                                </div>
+                                <div class="input__box">
+                                    <label>Address <span>*</span></label>
+                                    <input type="text" id="address" name="ADDRESS">
+                                </div>
+                                <div id="addressmess" style="display:none;color:red"><i>Địa chỉ không được trống</i></div>
+                                <div class="input__box">
+                                    <label>Email address <span>*</span></label>
+                                    <input type="email" id="email" name="EMAIL" required>
+                                </div>
+                                <div id="emailmess" style="display:none;color:red"><i>Email không được trống</i></div>
+                                <div class="input__box">
+                                    <label>Phone Number <span>*</span></label>
+                                    <input type="text" id="phonenumber" name="PHONE">
+                                </div>
+                                <div id="phonemess" style="display:none;color:red"><i>Số điện thoại không được trống</i></div>
+                                <div class="form__btn">
+                                    <button type="submit">Register</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+    var fullname = document.getElementById("fullname");
+    var username = document.getElementById("username");
+    var password = document.getElementById("password");
+    var checkpassword = document.getElementById("checkpassword");
+    var address = document.getElementById("address");
+    var email = document.getElementById("email");
+    var phone = document.getElementById("phonenumber");
+    //var regexpass = /^(?=.*[A-Z].*[A-Z])(?=.*[!#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
+        function validateRegister() {
+            if (fullname.value == "") {
+                document.getElementById("namemess").style.display = "block";
+                fullname.focus();
+            } else {
+                document.getElementById("namemess").style.display = "none";
+            }
+            if (username.value == "") {
+                document.getElementById("usernamemess").style.display = "block";
+                username.focus();
+            } else {
+                document.getElementById("usernamemess").style.display = "none";
+            }
+            if (password.value != "" && password.value.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#\$%\^&\*])(?=.{8,})")) {
+                document.getElementById("passmess").style.display = "none";
+                document.getElementById("passmess1").style.display = "none";
+            } else {
+                if (password.value == "") {
+                    document.getElementById("passmess").style.display = "block";
+                    document.getElementById("passmess1").style.display = "none";
+                    password.focus();
+                }
+                else {
+                    document.getElementById("passmess").style.display = "none";
+                    document.getElementById("passmess1").style.display = "block";
+                    password.focus();
+                }
+            }
+            if ((checkpassword.value == password.value)) {
+                document.getElementById("checkpass").style.display = "none";
+            }
+            else {
+                document.getElementById("checkpass").style.display = "block";
+                checkpassword.focus();
+            }
+            if (address.value == "") {
+                document.getElementById("addressmess").style.display = "block";
+                address.focus();
+            } else {
+                document.getElementById("addressmess").style.display = "none";
+            }
+            if (email.value == "") {
+                document.getElementById("emailmess").style.display = "block";
+                email.focus();
+            } else {
+                document.getElementById("emailmess").style.display = "none";
+            }          
+            if (phone.value == "") {
+                document.getElementById("phonemess").style.display = "block";
+                phone.focus();
+            } else {
+                document.getElementById("phonemess").style.display = "none";
+            }
+            if (email.value != "") {
+                var isValid = false;
+                $.ajax({
+                    type: 'GET',
+                    url: '/User/Register',
+                    dataType: 'json',
+                    data: { email: email.value },
+                    success: function (data) {
+                        if (data.status) {
+                            document.getElementById("error").style.display = "none";
+                            isValid = true;;
+                        }
+                        else {
+                            document.getElementById("error").style.display = "block";
+                            isValid = false;
+                        }
+                    }
+                });
+            }
+            if (isValid) {
+                    console.log(data)
+                    $.ajax({
+                        url: '/User/Register',
+                        data: { user: data },
+                        method: 'POST',
+                        dataType: 'text',
+                        success: function (response) {
+                            var obj = JSON.parse(response)
+                            if (obj.status === true) {
+                                if (confirm("Tạo tài khoản thành công !")) {
+                                    $(location).attr("href", '/Home/Index')
+                                }
+                            } else {
+                                alert(obj.message + obj.status)
+                            }
+                        }
+                    })               
+                return true;
+            } else {
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+
